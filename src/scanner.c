@@ -13,6 +13,9 @@ enum TokenType {
     IMPLICIT_END_TAG,
     RAW_TEXT,
     HTML_COMMENT,
+    LINE_STATEMENT_MARKER,
+    LINE_COMMENT,
+    LINE_END,
 };
 
 typedef struct {
@@ -308,9 +311,87 @@ static bool scan_self_closing_tag_delimiter(Scanner *scanner, TSLexer *lexer) {
     return false;
 }
 
+static inline bool is_inline_space(int32_t c) { return c == ' ' || c == '\t'; }
+
+// Jinja line statement: a '%' that is the first non-whitespace on its line acts
+// like `{% ... %}` for the rest of the line. Line comment: '##' at line start
+// comments the rest of the line. Returns the marker ('%') / the whole comment.
+static bool scan_line_marker(TSLexer *lexer, const bool *valid_symbols) {
+    bool at_line_start = lexer->get_column(lexer) == 0;
+
+    while (is_inline_space(lexer->lookahead) ||
+           lexer->lookahead == '\n' || lexer->lookahead == '\r') {
+        if (lexer->lookahead == '\n' || lexer->lookahead == '\r') {
+            at_line_start = true;
+        }
+        skip(lexer);
+    }
+
+    if (!at_line_start) {
+        return false;
+    }
+
+    if (valid_symbols[LINE_COMMENT] && lexer->lookahead == '#') {
+        advance(lexer);
+        if (lexer->lookahead != '#') {
+            return false;
+        }
+        advance(lexer);
+        while (lexer->lookahead && lexer->lookahead != '\n' && lexer->lookahead != '\r') {
+            advance(lexer);
+        }
+        lexer->mark_end(lexer);
+        lexer->result_symbol = LINE_COMMENT;
+        return true;
+    }
+
+    if (valid_symbols[LINE_STATEMENT_MARKER] && lexer->lookahead == '%') {
+        advance(lexer);
+        lexer->mark_end(lexer);
+        lexer->result_symbol = LINE_STATEMENT_MARKER;
+        return true;
+    }
+
+    return false;
+}
+
+// End of a line statement: optional trailing inline whitespace then a newline
+// or EOF. Consumes the newline.
+static bool scan_line_end(TSLexer *lexer) {
+    while (is_inline_space(lexer->lookahead)) {
+        skip(lexer);
+    }
+    if (lexer->lookahead == '\n' || lexer->lookahead == '\r') {
+        advance(lexer);
+        lexer->mark_end(lexer);
+        lexer->result_symbol = LINE_END;
+        return true;
+    }
+    if (lexer->eof(lexer)) {
+        lexer->mark_end(lexer);
+        lexer->result_symbol = LINE_END;
+        return true;
+    }
+    return false;
+}
+
 static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
     if (valid_symbols[RAW_TEXT] && !valid_symbols[START_TAG_NAME] && !valid_symbols[END_TAG_NAME]) {
         return scan_raw_text(scanner, lexer);
+    }
+
+    // Terminate a line statement at end-of-line (before generic ws-skip eats it).
+    if (valid_symbols[LINE_END] && !valid_symbols[LINE_STATEMENT_MARKER]) {
+        if (scan_line_end(lexer)) {
+            return true;
+        }
+    }
+
+    // Detect a line statement / line comment at the start of a line.
+    if (valid_symbols[LINE_STATEMENT_MARKER] || valid_symbols[LINE_COMMENT]) {
+        if (scan_line_marker(lexer, valid_symbols)) {
+            return true;
+        }
     }
 
     while (iswspace(lexer->lookahead)) {

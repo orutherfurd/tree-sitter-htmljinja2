@@ -245,6 +245,14 @@
           "named": true
         },
         {
+          "type": "jinja_line_comment",
+          "named": true
+        },
+        {
+          "type": "jinja_line_statement",
+          "named": true
+        },
+        {
           "type": "jinja_macro_statement",
           "named": true
         },
@@ -358,6 +366,14 @@
         },
         {
           "type": "jinja_include_statement",
+          "named": true
+        },
+        {
+          "type": "jinja_line_comment",
+          "named": true
+        },
+        {
+          "type": "jinja_line_statement",
           "named": true
         },
         {
@@ -634,6 +650,14 @@
             "named": true
           },
           {
+            "type": "jinja_line_comment",
+            "named": true
+          },
+          {
+            "type": "jinja_line_statement",
+            "named": true
+          },
+          {
             "type": "jinja_macro_statement",
             "named": true
           },
@@ -836,6 +860,14 @@
             "named": true
           },
           {
+            "type": "jinja_line_comment",
+            "named": true
+          },
+          {
+            "type": "jinja_line_statement",
+            "named": true
+          },
+          {
             "type": "jinja_macro_statement",
             "named": true
           },
@@ -979,6 +1011,58 @@
         },
         {
           "type": "jinja_string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "jinja_line_comment",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "jinja_line_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "jinja_attribute",
+          "named": true
+        },
+        {
+          "type": "jinja_boolean",
+          "named": true
+        },
+        {
+          "type": "jinja_filter",
+          "named": true
+        },
+        {
+          "type": "jinja_identifier",
+          "named": true
+        },
+        {
+          "type": "jinja_none",
+          "named": true
+        },
+        {
+          "type": "jinja_number",
+          "named": true
+        },
+        {
+          "type": "jinja_operator",
+          "named": true
+        },
+        {
+          "type": "jinja_string",
+          "named": true
+        },
+        {
+          "type": "jinja_test",
           "named": true
         }
       ]
@@ -1337,6 +1421,14 @@
         },
         {
           "type": "jinja_include_statement",
+          "named": true
+        },
+        {
+          "type": "jinja_line_comment",
+          "named": true
+        },
+        {
+          "type": "jinja_line_statement",
           "named": true
         },
         {

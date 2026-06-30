@@ -75,3 +75,31 @@ Decomposed expression: attribute access, filters, tests, empty strings
         (jinja_operator)
         (jinja_number)))
     (end_statement)))
+
+================================================================================
+Line statements and line comments
+================================================================================
+
+% for item in items
+  <li>{{ item.id }}</li>
+% endfor
+## a line comment
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (jinja_line_statement
+    (jinja_identifier)
+    (jinja_identifier))
+  (element
+    (start_tag
+      (tag_name))
+    (jinja_output
+      (expression
+        (jinja_identifier)
+        (jinja_attribute
+          (jinja_identifier))))
+    (end_tag
+      (tag_name)))
+  (jinja_line_statement)
+  (jinja_line_comment))

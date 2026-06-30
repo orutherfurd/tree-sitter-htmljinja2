@@ -51,6 +51,11 @@ module.exports = grammar({
     $._implicit_end_tag,
     $._raw_text,
     $.html_comment,
+    // Jinja line statements / line comments (line_statement_prefix='%',
+    // line_comment_prefix='##'). Emitted by the scanner only at line start.
+    $._line_statement_marker,
+    $._line_comment,
+    $._line_end,
   ],
 
 
@@ -65,7 +70,9 @@ module.exports = grammar({
       $.element,
       $.entity,
       $.text,
-      $._jinja
+      $._jinja,
+      $.jinja_line_statement,
+      $.jinja_line_comment
     ),
 
     _html_node: $ => choice(
@@ -282,6 +289,18 @@ module.exports = grammar({
     // while `%}` still beats a bare `%` by longest-match.
     jinja_operator: () => choice(token(/[^\w{#%}'"|\s.]+/), "%"),
 
+    // ---- Line statements / line comments ----------------------------------
+    jinja_line_statement: $ => seq(
+      alias($._line_statement_marker, "jinja_statement_start"),
+      optional($._jinja_inner),
+      $._line_end
+    ),
+
+    jinja_line_comment: $ => $._line_comment,
+
+
+
+    
     _jinja_statement: $ => choice(
       $.jinja_for_statement,
       $.jinja_if_statement,
