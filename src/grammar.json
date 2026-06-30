@@ -2362,8 +2362,11 @@
           "type": "FIELD",
           "name": "body",
           "content": {
-            "type": "SYMBOL",
-            "name": "_html_node"
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_html_node"
+            }
           }
         },
         {

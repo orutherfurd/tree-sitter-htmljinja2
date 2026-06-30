@@ -427,7 +427,7 @@ module.exports = grammar({
 
     jinja_raw_statement: $ => seq(
       alias($.jinja_raw_statement_start, $.start_statement),
-      field("body", $._html_node),
+      field("body", repeat($._html_node)),
       alias($.jinja_raw_statement_end, $.end_statement),
     ),
 
