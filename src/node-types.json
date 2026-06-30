@@ -485,7 +485,49 @@
   {
     "type": "expression",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "jinja_attribute",
+          "named": true
+        },
+        {
+          "type": "jinja_boolean",
+          "named": true
+        },
+        {
+          "type": "jinja_filter",
+          "named": true
+        },
+        {
+          "type": "jinja_identifier",
+          "named": true
+        },
+        {
+          "type": "jinja_none",
+          "named": true
+        },
+        {
+          "type": "jinja_number",
+          "named": true
+        },
+        {
+          "type": "jinja_operator",
+          "named": true
+        },
+        {
+          "type": "jinja_string",
+          "named": true
+        },
+        {
+          "type": "jinja_test",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "jinja_assignment_statement",
@@ -497,6 +539,22 @@
         "types": [
           {
             "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "jinja_attribute",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "jinja_identifier",
             "named": true
           }
         ]
@@ -687,6 +745,22 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "jinja_filter",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "jinja_identifier",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -934,6 +1008,11 @@
     }
   },
   {
+    "type": "jinja_operator",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "jinja_output",
     "named": true,
     "fields": {},
@@ -1006,6 +1085,22 @@
     "type": "jinja_string",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "jinja_test",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "jinja_identifier",
+            "named": true
+          }
+        ]
+      }
+    }
   },
   {
     "type": "jinja_with_statement",
@@ -1419,11 +1514,19 @@
     "named": false
   },
   {
+    "type": "%",
+    "named": false
+  },
+  {
     "type": "'",
     "named": false
   },
   {
     "type": ",",
+    "named": false
+  },
+  {
+    "type": ".",
     "named": false
   },
   {
@@ -1472,7 +1575,19 @@
     "extra": true
   },
   {
+    "type": "jinja_boolean",
+    "named": true
+  },
+  {
     "type": "jinja_identifier",
+    "named": true
+  },
+  {
+    "type": "jinja_none",
+    "named": true
+  },
+  {
+    "type": "jinja_number",
     "named": true
   },
   {
@@ -1497,6 +1612,10 @@
   },
   {
     "type": "{{",
+    "named": false
+  },
+  {
+    "type": "|",
     "named": false
   },
   {

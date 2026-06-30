@@ -18,8 +18,13 @@ export function jinja_statement(kw, ...rest) {
 }
 
 
+/**
+ * The expression part of a statement / output, decomposed into a flat token
+ * stream (identifiers, filters, operators, literals, keywords) so it can be
+ * highlighted. Aliased to `expression` to keep the public node name stable.
+ */
 export function jinja_expression_in_statement($) {
-  return alias($._jinja_expression_in_statement, $.expression);
+  return alias($._jinja_inner, $.expression);
 }
 
 export function jinja_keyword(kw) {

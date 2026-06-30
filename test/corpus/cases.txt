@@ -22,7 +22,8 @@ Element Split by Jinja Expressions
       (tag_name)))
   (jinja_if_statement
     (start_statement
-      (expression))
+      (expression
+        (jinja_boolean)))
     (body
       (single_element
         (start_tag
@@ -31,9 +32,46 @@ Element Split by Jinja Expressions
   (text)
   (jinja_if_statement
     (start_statement
-      (expression))
+      (expression
+        (jinja_boolean)))
     (body
       (single_element
         (end_tag
           (tag_name))))
+    (end_statement)))
+
+================================================================================
+Decomposed expression: attribute access, filters, tests, empty strings
+================================================================================
+
+{{ form.get('x').name | default('') }}
+{% if user is defined and n % 2 %}{% endif %}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (jinja_output
+    (expression
+      (jinja_identifier)
+      (jinja_attribute
+        (jinja_identifier))
+      (jinja_operator)
+      (jinja_string)
+      (jinja_operator)
+      (jinja_attribute
+        (jinja_identifier))
+      (jinja_filter
+        (jinja_identifier))
+      (jinja_operator)
+      (jinja_string)
+      (jinja_operator)))
+  (jinja_if_statement
+    (start_statement
+      (expression
+        (jinja_identifier)
+        (jinja_test
+          (jinja_identifier))
+        (jinja_identifier)
+        (jinja_operator)
+        (jinja_number)))
     (end_statement)))

@@ -60,15 +60,19 @@ Real World - 0
             (attribute_name)
             (quoted_attribute_value
               (jinja_output
-                (expression))))
+                (expression
+                  (jinja_identifier)))))
           (attribute
             (attribute_name)
             (quoted_attribute_value
               (jinja_output
-                (expression)))))
+                (expression
+                  (jinja_identifier))))))
         (jinja_for_statement
           (start_statement
-            (expression))
+            (expression
+              (jinja_identifier)
+              (jinja_identifier)))
           (body
             (element
               (start_tag
@@ -80,9 +84,15 @@ Real World - 0
                     (attribute_name)
                     (quoted_attribute_value
                       (jinja_output
-                        (expression)))))
+                        (expression
+                          (jinja_identifier)
+                          (jinja_attribute
+                            (jinja_identifier)))))))
                 (jinja_output
-                  (expression))
+                  (expression
+                    (jinja_identifier)
+                    (jinja_attribute
+                      (jinja_identifier))))
                 (end_tag
                   (tag_name)))
               (end_tag
@@ -94,13 +104,15 @@ Real World - 0
         (start_tag
           (tag_name))
         (jinja_output
-          (expression))
+          (expression
+            (jinja_identifier)))
         (end_tag
           (tag_name)))
       (jinja_comment)
       (jinja_if_statement
         (start_statement
-          (expression))
+          (expression
+            (jinja_boolean)))
         (body
           (single_element
             (start_tag
@@ -109,7 +121,8 @@ Real World - 0
       (text)
       (jinja_if_statement
         (start_statement
-          (expression))
+          (expression
+            (jinja_boolean)))
         (body
           (single_element
             (end_tag

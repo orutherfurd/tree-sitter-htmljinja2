@@ -22,6 +22,10 @@ const {
 module.exports = grammar({
   name: "htmljinja2",
 
+  // Keyword extraction: keywords are only recognized as whole words, so `or`
+  // does not match inside `order`, `for` not inside `form`, etc.
+  word: $ => $.jinja_identifier,
+
   extras: $ => [
     // it can appear anywhere in the tree structure, not in alias
     // for example,
@@ -214,15 +218,70 @@ module.exports = grammar({
       $.jinja_comment
     ),
 
+    // Kept opaque only for unknown/custom tags.
     _jinja_expression_in_statement: () => repeat1(/[^\s\%\-\+]+|[\%\-\+]/),
-    
+
     jinja_output: ($) =>
-      seq("{{", alias(optional($._jinja_output_code), $.expression), "}}"),
-    _jinja_output_code: () => prec.right(repeat1(/[^\s\}\-\+]+|[\}\-\+]/)),
+      seq("{{", alias(optional($._jinja_inner), $.expression), "}}"),
 
+    // ---- Decomposed expression interior -----------------------------------
+    // Flat token stream shared by {{ }}, {% %} expression parts, and line
+    // statements. Whitespace is handled by `extras`, so no explicit ws tokens.
+    _jinja_inner: $ => prec.right(repeat1($._jinja_expr_token)),
 
+    _jinja_expr_token: $ => choice(
+      $.jinja_test,
+      $._jinja_kw,
+      $.jinja_filter,
+      $.jinja_string,
+      $.jinja_number,
+      $.jinja_boolean,
+      $.jinja_none,
+      $.jinja_attribute,
+      $.jinja_identifier,
+      $.jinja_operator
+    ),
 
-    
+    // Any Jinja keyword appearing inside an expression or a line statement.
+    // Aliased to "keyword" so it reuses the same highlight as statement
+    // keywords.
+    _jinja_kw: () => alias(choice(
+      "for", "endfor", "if", "elif", "else", "endif", "in",
+      "and", "or", "not", "set", "endset", "block", "endblock",
+      "macro", "endmacro", "call", "endcall", "filter", "endfilter",
+      "with", "endwith", "include", "import", "from", "extends", "as",
+      "raw", "endraw", "do", "autoescape", "endautoescape",
+      "scoped", "required", "recursive"
+    ), "keyword"),
+
+    jinja_filter: $ => seq("|", field("name", $.jinja_identifier)),
+
+    // `is [not] <test>` — e.g. `is defined`, `is not none`, `is divisibleby(3)`.
+    jinja_test: $ => seq(
+      alias("is", "keyword"),
+      optional(alias("not", "keyword")),
+      field("name", $.jinja_identifier)
+    ),
+
+    // Attribute access as a standalone token so it works after anything:
+    // `a.b`, `form.get('x').name`, `(a - b).days`, `foo()['k'].bar`.
+    jinja_attribute: $ => seq(".", field("name", $.jinja_identifier)),
+
+    jinja_identifier: () => /[a-zA-Z_][\w]*/,
+
+    jinja_number: () => token(prec(1, /\d+(\.\d+)?/)),
+
+    jinja_boolean: () => token(prec(2, choice("true", "false", "True", "False"))),
+
+    jinja_none: () => token(prec(2, choice("none", "None", "null"))),
+
+    // Symbol runs: arithmetic, comparison, grouping, assignment. The run
+    // excludes `{ # % } ' " | . \s` so it never eats a closing delimiter, a
+    // dotted access, or a filter pipe. Modulo `%` is a SEPARATE single-char
+    // token (not part of the run) so that `]%}`/`)%}` lex as operator + `%}`,
+    // while `%}` still beats a bare `%` by longest-match.
+    jinja_operator: () => choice(token(/[^\w{#%}'"|\s.]+/), "%"),
+
     _jinja_statement: $ => choice(
       $.jinja_for_statement,
       $.jinja_if_statement,
