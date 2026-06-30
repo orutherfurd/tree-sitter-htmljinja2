@@ -1,5 +1,13 @@
 # tree-sitter-htmljinja2
 
+> **Fork.** This is a fork of
+> [Ziqi-Yang/tree-sitter-htmljinja2](https://github.com/Ziqi-Yang/tree-sitter-htmljinja2)
+> by Meow King (MIT). Added here: a decomposed expression interior (identifiers,
+> attribute access, filters, `is` tests, literals, operators), whole-word
+> keyword matching, Jinja line statements (`%`) and line comments (`##`), and
+> fixes for empty strings, attribute access after calls, modulo, and empty
+> `{% raw %}`. Used by the Zed extension `zed-html-jinja2`.
+
 An opinionated html+jinja2 grammar, made for easy integration with editors.
 
 Jinja template doesn't have major difference between Django template, so you can
