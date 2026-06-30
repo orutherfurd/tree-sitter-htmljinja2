@@ -448,7 +448,7 @@ module.exports = grammar({
     
     jinja_identifier: () => /[\w]+/,
 
-    jinja_string: () => choice(seq(`"`, /[^\"]+/, `"`), seq(`'`, /[^\']+/, `'`)),
+    jinja_string: () => choice(seq(`"`, /[^\"]*/, `"`), seq(`'`, /[^\']*/, `'`)),
     
     jinja_comment: () => seq("{#", repeat(/[^\#]+|[\#]/), "#}"),
 
